@@ -49,8 +49,8 @@ class WorldMeter(DataSource):
             t1 = tables[0]
             t1metarows = t1.find_all('tr')
             t1rows = []
-            for i in range(2, len(t1metarows)):
-                t1r = t1metarows[i].find_all('td')
+            for t in t1metarows:
+                t1r = t.find_all('td')
                 t1rows.append(t1r)
             self.data = list(map(self.datafy, t1rows))
 
@@ -58,8 +58,10 @@ class WorldMeter(DataSource):
             print(f'An Error Occurred: {e}')
 
     def datafy(self, seq: list):
-        seq = list(map(lambda x: x.get_text(strip=True).replace(' ', '-'),
-                       seq))
+        seq = list(
+            map(
+                lambda x: x.get_text(strip=True).replace('.', '').replace(
+                    ' ', '-'), seq))
         # pprint(seq)
         x = {
             'country': seq[0].lower(),
@@ -79,4 +81,5 @@ if __name__ == "__main__":
     w = WorldMeter()
     w.fetch()
     w.parse()
-    pprint(w.get_data())
+    d = w.get_data()
+    pprint(d)

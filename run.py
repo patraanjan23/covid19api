@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify
 from firebase_admin import credentials, firestore, initialize_app
 from source import WorldMeter
 
@@ -28,17 +28,17 @@ def update_db():
         data = wmtr.get_data()
         for d in data:
             country = d['country']
-            wmtr_ref.document(country).update(d['data'])
+            wmtr_ref.document(country).set(d['data'])
         return jsonify({'success': True}), 200
     except Exception as e:
         return f'An Error Occurred: {e}'
 
 
 # function to receive country data
-@app.route('/data', methods=['GET'])
-def send():
+@app.route('/data/<string:country>', methods=['GET'])
+def send(country: str):
     try:
-        country = request.args.get('country')
+        # country = request.args.get('country')
         if country:
             data = wmtr_ref.document(country).get()
             return jsonify(data.to_dict()), 200
