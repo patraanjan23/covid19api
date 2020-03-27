@@ -28,7 +28,7 @@ def update_db():
         data = wmtr.get_data()
         for d in data:
             country = d['country']
-            wmtr_ref.document(country).set(d['data'])
+            wmtr_ref.document(country).update(d['data'])
         return jsonify({'success': True}), 200
     except Exception as e:
         return f'An Error Occurred: {e}'
