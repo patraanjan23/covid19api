@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from firebase_admin import credentials, firestore, initialize_app
 from source import WorldMeter
 
@@ -23,13 +23,18 @@ wmtr = WorldMeter()
 @app.route('/update', methods=['POST'])
 def update_db():
     try:
-        wmtr.fetch()
-        wmtr.parse()
-        data = wmtr.get_data()
-        for d in data:
-            country = d['country']
-            wmtr_ref.document(country).set(d['data'])
-        return jsonify({'success': True}), 200
+        with open('api.key') as infile:
+            api_key = infile.readline().replace('\n', '').strip()
+            if api_key == request.args.get('x-api-key'):
+                wmtr.fetch()
+                wmtr.parse()
+                data = wmtr.get_data()
+                for d in data:
+                    country = d['country']
+                    wmtr_ref.document(country).set(d['data'])
+                return jsonify({'success': True}), 200
+            else:
+                return jsonify({'success': False}), 401
     except Exception as e:
         return f'An Error Occurred: {e}'
 
@@ -49,6 +54,6 @@ def send(country: str):
 
 
 # run flask app
-port = os.environ.get('PORT', 5000)
 if __name__ == "__main__":
+    port = os.environ.get('PORT', 8080)
     app.run(threaded=True, host='0.0.0.0', port=port)
