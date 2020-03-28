@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from flask import Flask, jsonify, request
 from firebase_admin import credentials, firestore, initialize_app
 from source import WorldMeter
@@ -28,11 +29,14 @@ def update_db():
             if api_key == request.args.get('x-api-key'):
                 wmtr.fetch()
                 wmtr.parse()
+                timestamp = str(datetime.utcnow())
                 data = wmtr.get_data()
                 for d in data:
                     country = d['country']
-                    wmtr_ref.document(country).set(d['data'])
-                return jsonify({'success': True}), 200
+                    cdata = d['data']
+                    cdata['timestamp'] = timestamp
+                    wmtr_ref.document(country).set(cdata)
+                return jsonify({'success': True, 'timestamp': timestamp}), 200
             else:
                 return jsonify({'success': False}), 401
     except Exception as e:
