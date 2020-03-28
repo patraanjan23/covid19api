@@ -5,4 +5,4 @@ ENV FLASK_APP run.py
 WORKDIR ${APP_HOME}
 COPY . ./
 RUN pip3 install -r requirements.txt
-CMD exec gunicorn --bind :$PORT --workers 3 run:app
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 3 run:app
