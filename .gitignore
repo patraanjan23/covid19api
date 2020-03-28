@@ -121,11 +121,7 @@ venv.bak/
 pip-selfcheck.json
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
@@ -133,4 +129,7 @@ pip-selfcheck.json
 
 # End of https://www.gitignore.io/api/venv,python,visualstudiocode
 
-key.json
+covid19.py
+firebase.html
+worldmeter.py
+response.json
