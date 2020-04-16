@@ -37,7 +37,7 @@ class DataSource:
 
 
 class WorldMeter(DataSource):
-    url = 'https://www.worldometers.info/coronavirus/'
+    url = 'https://www.worldometers.info/coronavirus'
 
     def __init__(self):
         super().__init__(self.url)
@@ -48,8 +48,11 @@ class WorldMeter(DataSource):
                 'table', id='main_table_countries_today').find_all('tbody')
             t1 = tables[0]
             t1metarows = t1.find_all('tr')
+            exclusion = t1.find_all('tr', class_='row_continent')
             t1rows = []
             for t in t1metarows:
+                if t in exclusion:
+                    continue
                 t1r = t.find_all('td')
                 t1rows.append(t1r)
             self.data = list(map(self.datafy, t1rows))

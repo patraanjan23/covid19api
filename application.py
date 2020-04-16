@@ -5,7 +5,7 @@ from firebase_admin import credentials, firestore, initialize_app
 from source import WorldMeter
 
 # init flask app
-app = Flask(__name__)
+application = Flask(__name__)
 
 # init firestore db
 cred = credentials.Certificate('key.json')
@@ -13,7 +13,7 @@ default_app = initialize_app(cred)
 db = firestore.client()
 
 # create collections in firebase
-wmtr_ref = db.collection('worldmeter')
+wmtr_ref = db.collection('worldmeter-aws')
 bno_ref = db.collection('bno')
 
 # init worldmeter source
@@ -21,7 +21,7 @@ wmtr = WorldMeter()
 
 
 # function to update database
-@app.route('/update', methods=['POST'])
+@application.route('/update', methods=['POST'])
 def update_db():
     try:
         with open('api.key') as infile:
@@ -36,15 +36,15 @@ def update_db():
                     cdata = d['data']
                     cdata['timestamp'] = timestamp
                     wmtr_ref.document(country).set(cdata)
-                return jsonify({'success': True, 'timestamp': timestamp}), 200
+                return jsonify({'success': True, 'timestamp': timestamp, 'data': data}), 200
             else:
                 return jsonify({'success': False}), 401
     except Exception as e:
-        return f'An Error Occurred: {e}'
+        return f'POST: An Error Occurred: {e}'
 
 
 # function to receive country data
-@app.route('/data/<string:country>', methods=['GET'])
+@application.route('/data/<string:country>', methods=['GET'])
 def send(country: str):
     try:
         # country = request.args.get('country')
@@ -59,5 +59,6 @@ def send(country: str):
 
 # run flask app
 if __name__ == "__main__":
-    port = os.environ.get('PORT', 8080)
-    app.run(threaded=True, host='0.0.0.0', port=port)
+    port = os.environ.get('PORT', 5000)
+    application.debug = True
+    application.run(threaded=True, host='0.0.0.0', port=port)
