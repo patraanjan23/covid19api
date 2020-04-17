@@ -59,6 +59,5 @@ def send(country: str):
 
 # run flask app
 if __name__ == "__main__":
-    port = os.environ.get('PORT', 5000)
-    application.debug = True
+    port = os.environ.get('PORT', 8080)
     application.run(threaded=True, host='0.0.0.0', port=port)
