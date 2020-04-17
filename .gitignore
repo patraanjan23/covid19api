@@ -133,3 +133,7 @@ covid19.py
 firebase.html
 worldmeter.py
 response.json
+
+.ebextensions/
+*.key
+key.*
