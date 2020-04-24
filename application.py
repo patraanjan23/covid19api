@@ -36,7 +36,11 @@ def update_db():
                     cdata = d['data']
                     cdata['timestamp'] = timestamp
                     wmtr_ref.document(country).set(cdata)
-                return jsonify({'success': True, 'timestamp': timestamp, 'data': data}), 200
+                return jsonify({
+                    'success': True,
+                    'timestamp': timestamp,
+                    'data': data
+                }), 200
             else:
                 return jsonify({'success': False}), 401
     except Exception as e:
