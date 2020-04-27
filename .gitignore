@@ -137,3 +137,4 @@ response.json
 .ebextensions/
 *.key
 key.*
+zip/
