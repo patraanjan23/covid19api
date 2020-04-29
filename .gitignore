@@ -138,3 +138,5 @@ response.json
 *.key
 key.*
 zip/
+*.csv
+timeseries.json
