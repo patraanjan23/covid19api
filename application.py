@@ -56,9 +56,9 @@ def update_db():
 def getall():
     try:
         datastream = wmtr_ref.stream()
-        countries = {}
+        countries = []
         for data in datastream:
-            countries[data.id] = data.to_dict()
+            countries.append({'country': data.id, 'data': data.to_dict()})
         return jsonify(countries), 200
     except Exception as e:
         return f'FetchAll: An Error Occurred: {e}'
