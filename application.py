@@ -51,6 +51,18 @@ def update_db():
         return f'POST: An Error Occurred: {e}'
 
 
+# function to retrieve all country data
+@application.route('/api/v1/current', methods=['GET'])
+def getall():
+    try:
+        datastream = wmtr_ref.stream()
+        countries = {}
+        for data in datastream:
+            countries[data.id] = data.to_dict()
+        return jsonify(countries), 200
+    except Exception as e:
+        return f'FetchAll: An Error Occurred: {e}'
+
 # function to receive country data
 @application.route('/api/v1/current/<string:country>', methods=['GET'])
 def send(country: str):
