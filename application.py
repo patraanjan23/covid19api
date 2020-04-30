@@ -52,7 +52,7 @@ def update_db():
 
 
 # function to receive country data
-@application.route('api/v1/current/<string:country>', methods=['GET'])
+@application.route('/api/v1/current/<string:country>', methods=['GET'])
 def send(country: str):
     try:
         # country = request.args.get('country')
