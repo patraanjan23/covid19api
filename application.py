@@ -129,10 +129,6 @@ def ts_country(country: str):
         return jsonify(result), 200
     except Exception as e:
         return f'TimeseriesFetch: An Error Occurred {e}', 404
-        # return jsonify({
-        #     'success': False,
-        #     'error': f'{e}',
-        # })
 
 
 # run flask app
