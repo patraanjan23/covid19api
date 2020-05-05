@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from datetime import datetime
 from flask import Flask, jsonify, request
 from firebase_admin import credentials, firestore, initialize_app
@@ -104,49 +105,28 @@ def update_timeseries():
 def ts_country(country: str):
     try:
         country = country.lower()
-        with open('timeseries.json') as infile:
-            data = json.load(infile)
-            c_data = data['confirmed'][country]
-            r_data = data['recovered'][country]
-            d_data = data['deaths'][country]
-            result = {
-                'confirmed': c_data,
-                'recovered': r_data,
-                'deaths': d_data,
-                'timestamp': data['timestamp'],
-            }
-            return jsonify(result), 200
-            # for c in data['confirmed']:
-            #     if c['country'] == country and c['province'] == '':
-            #         return jsonify(c), 200
-        # return f"TimeseriesFetch: country '{country}' not found"
-            # timestamp = data['timestamp']
-            # cdata = {}
-            # rdata = {}
-            # ddata = {}
-            # for c in data['confirmed']:
-            #     if c['country'] == country:
-            #         cdata = c
-            #         break
-            # for r in data['recovered']:
-            #     if r['country'] == country:
-            #         rdata = r
-            #         break
-            # for d in data['deaths']:
-            #     if d['country'] == country:
-            #         ddata = d
-            #         break
-            # result = {
-            #     'timestamp': cdata['timestamp'],
-            #     'country': cdata['country'],
-            #     'lat': cdata['lat'],
-            #     'long': cdata['long'],
-            #     'ts_confirmed': cdata['data'],
-            #     'ts_recovered': rdata['data'],
-            #     'ts_deaths': ddata['data'],
-            #     'success': True,
-            # }
-            # return jsonify(result), 200
+        data = []
+        if not os.path.exists(ts.tsfile):
+            ts.fetch_data()
+            data = ts.parse_data()
+            print("downloaded all files 1")
+        elif os.path.getmtime(ts.tsfile) + 2 * 3600 < time.time():
+            ts.fetch_data()
+            data = ts.parse_data()
+            print("downloaded all files 2")
+        else:
+            with open('timeseries.json') as infile:
+                data = json.load(infile)
+        c_data = data['confirmed'][country]
+        r_data = data['recovered'][country]
+        d_data = data['deaths'][country]
+        result = {
+            'confirmed': c_data,
+            'recovered': r_data,
+            'deaths': d_data,
+            'timestamp': data['timestamp'],
+        }
+        return jsonify(result), 200
     except Exception as e:
         return f'TimeseriesFetch: An Error Occurred {e}', 404
         # return jsonify({
